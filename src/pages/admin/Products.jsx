@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { useProducts } from '../../hooks/useProducts';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Badge from '../../components/Badge';
 import Spinner from '../../components/Spinner';
@@ -12,37 +11,28 @@ import { useToast } from '../../components/Toast';
 export default function Products() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-
-  const { products, loading, total, refresh } = useProducts({
-    search,
-    pageSize: 50,
-  });
-
-  // We also need inactive products — override the hook's is_active filter
-  const [allProducts, setAllProducts] = useState(null);
-  const [allLoading, setAllLoading] = useState(false);
-  const displayProducts = allProducts ?? products;
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   async function loadAll(searchVal) {
-    setAllLoading(true);
+    setLoading(true);
     let query = supabase
       .from('products')
-      .select('*', { count: 'exact' })
+      .select('*')
       .order('created_at', { ascending: false });
     if (searchVal) query = query.ilike('name', `%${searchVal}%`);
     const { data } = await query;
-    setAllProducts(data ?? []);
-    setAllLoading(false);
+    setProducts(data ?? []);
+    setLoading(false);
   }
 
-  // Initial load of all products
-  useState(() => {
+  useEffect(() => {
     loadAll('');
-  });
+  }, []);
 
   function handleSearch(e) {
     e.preventDefault();
