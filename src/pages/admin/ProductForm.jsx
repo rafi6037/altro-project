@@ -43,6 +43,13 @@ function ArrayField({ label, fields, append, remove, register, fieldKey, placeho
   );
 }
 
+const ALLOWED_IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif']);
+
+function getSafeImageExtension(file) {
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+  return ALLOWED_IMAGE_EXTENSIONS.has(ext) ? ext : 'jpg';
+}
+
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -169,8 +176,9 @@ export default function ProductForm() {
     const currentImages = watch('images') ?? [];
     const newImages = [...currentImages];
     for (const file of files) {
-      const ext = file.name.split('.').pop();
-      const path = `product-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+      const ext = getSafeImageExtension(file);
+      const uniqueId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      const path = `product-${uniqueId}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from('products')
         .upload(path, file, { upsert: false, contentType: file.type });
