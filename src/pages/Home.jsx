@@ -141,12 +141,12 @@ export default function Home() {
         onClose={() => setCheckoutOpen(false)}
       />
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <div className="relative">
         <HeroBanner slides={heroSlides} />
       </div>
 
-      {/* ── Marquee Strip ── */}
+      {/* Marquee Strip */}
       <div className="bg-[#1a5c38] overflow-hidden py-2.5 border-y border-[#0e1a12]/10">
         <div
           className="flex whitespace-nowrap text-[#c9f230] font-semibold text-[11px] tracking-[0.25em] uppercase"
@@ -165,7 +165,7 @@ export default function Home() {
             </span>
           ))}
           {[...Array(4)].map((_, i) => (
-            <span key={`b${i}`} className="inline-flex items-center gap-6 px-6" aria-hidden>
+            <span key={'b' + i} className="inline-flex items-center gap-6 px-6" aria-hidden>
               <span>ALTRO</span>
               <span className="w-1 h-1 rounded-full bg-[#c9f230]/50 inline-block" />
               <span>QUALITY ATTIRE</span>
@@ -185,7 +185,7 @@ export default function Home() {
         `}</style>
       </div>
 
-      {/* ── USP Strip ── */}
+      {/* USP Strip */}
       <section className="bg-white border-b border-[#1a5c38]/8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#1a5c38]/8">
@@ -204,7 +204,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Promo Banners ── */}
+      {/* Promo Banners */}
       {promobanners.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
           <div className="flex items-end justify-between mb-5">
@@ -216,15 +216,15 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {promobanners.slice(0, 3).map((banner, idx) => (
               
-                key={banner.id ?? idx}
-                href={banner.cta_url ?? '#'}
+                key={banner.id != null ? banner.id : idx}
+                href={banner.cta_url != null ? banner.cta_url : '#'}
                 className="relative block rounded-xl overflow-hidden group"
                 style={{ aspectRatio: '4/3' }}
               >
                 {banner.image_url ? (
                   <img
                     src={banner.image_url}
-                    alt={banner.title ?? ''}
+                    alt={banner.title != null ? banner.title : ''}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
@@ -250,11 +250,10 @@ export default function Home() {
         </section>
       )}
 
-      {/* ── Category Carousel ── */}
+      {/* Category Carousel */}
       {categoryBanners.length > 0 && (
         <section className="pt-12 pb-4" id="categories">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Section header */}
             <div className="flex items-center gap-4 mb-6">
               <h2 className="text-xs font-semibold tracking-[0.18em] uppercase text-[#1a5c38] shrink-0">
                 Shop by Category
@@ -262,32 +261,28 @@ export default function Home() {
               <span className="h-px flex-1 bg-[#1a5c38]/10" />
             </div>
 
-            {/* Mobile: horizontal scroll / Desktop: grid */}
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible">
               {categoryBanners.map((cat, idx) => (
                 
-                  key={cat.id ?? idx}
+                  key={cat.id != null ? cat.id : idx}
                   href="/#products"
                   className="group relative flex-shrink-0 w-36 md:w-auto rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
                   style={{ aspectRatio: '3/4' }}
                 >
-                  {/* Background image or emoji fallback */}
                   {cat.image_url ? (
                     <img
                       src={cat.image_url}
-                      alt={cat.title ?? ''}
+                      alt={cat.title != null ? cat.title : ''}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-[#1a5c38]/15 flex items-center justify-center text-4xl">
-                      👕
+                      {'👕'}
                     </div>
                   )}
 
-                  {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0e1a12]/80 via-[#0e1a12]/20 to-transparent transition-opacity duration-300 group-hover:opacity-95" />
 
-                  {/* Label */}
                   <div className="absolute bottom-0 left-0 right-0 p-3.5">
                     <span className="block text-white font-bold text-sm leading-tight tracking-wide">
                       {cat.title}
@@ -300,7 +295,6 @@ export default function Home() {
                     </span>
                   </div>
 
-                  {/* Hover border accent */}
                   <div className="absolute inset-0 rounded-2xl ring-2 ring-transparent group-hover:ring-[#c9f230]/60 transition-all duration-300" />
                 </a>
               ))}
@@ -309,11 +303,9 @@ export default function Home() {
         </section>
       )}
 
-      {/* ── Products Section ── */}
+      {/* Products Section */}
       <section id="products" className="py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Section header */}
           <div className="flex items-center gap-4 mb-7">
             <div>
               <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#1a5c38] mb-1">
@@ -324,24 +316,23 @@ export default function Home() {
             <span className="h-px flex-1 bg-[#1a5c38]/10 mt-4" />
           </div>
 
-          {/* Category Filter Tabs */}
           <div className="flex gap-2 flex-wrap mb-7">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveTab(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ${
-                  activeTab === cat
+                className={
+                  'px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 ' +
+                  (activeTab === cat
                     ? 'bg-[#1a5c38] text-white shadow-md shadow-[#1a5c38]/20'
-                    : 'bg-white text-[#0e1a12]/55 hover:text-[#1a5c38] border border-[#1a5c38]/12 hover:border-[#1a5c38]/30'
-                }`}
+                    : 'bg-white text-[#0e1a12]/55 hover:text-[#1a5c38] border border-[#1a5c38]/12 hover:border-[#1a5c38]/30')
+                }
               >
                 {cat}
               </button>
             ))}
           </div>
 
-          {/* Products Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {loading && products.length === 0
               ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
@@ -388,25 +379,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Sale Banner ── */}
+      {/* Sale Banner */}
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           {saleBanner ? (
             
-              href={saleBanner.cta_url ?? '#'}
+              href={saleBanner.cta_url != null ? saleBanner.cta_url : '#'}
               className="relative block rounded-2xl overflow-hidden group"
               style={{ aspectRatio: '21/7' }}
             >
               <img
                 src={saleBanner.image_url}
-                alt={saleBanner.title ?? 'Sale'}
+                alt={saleBanner.title != null ? saleBanner.title : 'Sale'}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0e1a12]/85 via-[#1a5c38]/60 to-transparent" />
               <div className="absolute inset-0 flex flex-col justify-center p-8 md:p-14">
                 <p className="text-[#c9f230] text-xs font-bold tracking-[0.2em] uppercase mb-2">Limited Time</p>
                 <h3 className="text-white text-3xl md:text-5xl font-bold mb-4 leading-tight">
-                  {saleBanner.title ?? 'End of Season Sale'}
+                  {saleBanner.title != null ? saleBanner.title : 'End of Season Sale'}
                 </h3>
                 {saleBanner.cta_text && (
                   <span className="inline-flex items-center gap-2 bg-[#c9f230] text-[#0e1a12] font-bold px-6 py-2.5 rounded-full text-sm w-fit">
@@ -443,7 +434,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Newsletter ── */}
+      {/* Newsletter */}
       <section className="py-16 bg-[#0e1a12]">
         <div className="max-w-lg mx-auto px-4 text-center">
           <p className="text-[#c9f230] text-[10px] font-bold tracking-[0.25em] uppercase mb-3">Stay Connected</p>
@@ -456,7 +447,7 @@ export default function Home() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              You're subscribed — welcome aboard!
+              {"You're subscribed — welcome aboard!"}
             </div>
           ) : (
             <>
