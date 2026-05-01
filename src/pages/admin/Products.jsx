@@ -50,6 +50,10 @@ export default function Products() {
     } else {
       toast.success(`Product ${product.is_active ? 'deactivated' : 'activated'}.`);
       loadAll(searchTerm);
+    }
+  }
+
+  async function handleDelete() {
     if (!deleteTarget) return;
     setDeleteLoading(true);
     const { error } = await supabase.from('products').delete().eq('id', deleteTarget.id);
@@ -59,13 +63,14 @@ export default function Products() {
       toast.success('Product deleted.');
       setDeleteTarget(null);
       loadAll(searchTerm);
+    }
+    setDeleteLoading(false);
   }
 
   const isLoading = loading;
 
   return (
     <div className="p-4 lg:p-6 space-y-4">
-      {/* Top bar */}
       <div className="flex flex-col sm:flex-row gap-3">
         <form onSubmit={handleSearch} className="flex-1 flex gap-2">
           <input
@@ -93,7 +98,6 @@ export default function Products() {
         </button>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
           <h2 className="font-semibold text-[#0e1a12]">
@@ -163,9 +167,7 @@ export default function Products() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <Badge
-                        variant={product.is_active ? 'success' : 'error'}
-                      >
+                      <Badge variant={product.is_active ? 'success' : 'error'}>
                         {product.is_active ? 'Active' : 'Inactive'}
                       </Badge>
                     </td>
@@ -199,7 +201,6 @@ export default function Products() {
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
       <Modal
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
