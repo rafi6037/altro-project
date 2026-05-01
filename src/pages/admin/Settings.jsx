@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useSettingsStore } from '../../store/settingsStore';
+import { generateUniqueId } from '../../utils/generateUniqueId';
 import Button from '../../components/Button';
 import Spinner from '../../components/Spinner';
 import { useToast } from '../../components/Toast';
@@ -109,8 +110,7 @@ export default function Settings() {
     const rawExt = file.name.split('.').pop()?.toLowerCase() ?? '';
     const ext = ALLOWED_EXTS.has(rawExt) ? rawExt : 'jpg';
     setLogoUploading(true);
-    const uniqueId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`;
-    const path = `logo-${uniqueId}.${ext}`;
+    const path = `logo-${generateUniqueId()}.${ext}`;
     const { error: upErr } = await supabase.storage
       .from('settings')
       .upload(path, file, { upsert: true, contentType: file.type });

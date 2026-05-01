@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { generateUniqueId } from '../../utils/generateUniqueId';
 import Badge from '../../components/Badge';
 import Spinner from '../../components/Spinner';
 import Modal from '../../components/Modal';
@@ -117,7 +118,7 @@ export default function Banners() {
     const rawExt = file.name.split('.').pop()?.toLowerCase() ?? '';
     const ext = ALLOWED_EXTS.has(rawExt) ? rawExt : 'jpg';
     setImageUploading(true);
-    const path = `banner-${Date.now()}.${ext}`;
+    const path = `banner-${generateUniqueId()}.${ext}`;
     const { error: upErr } = await supabase.storage
       .from('banners')
       .upload(path, file, { upsert: false, contentType: file.type });

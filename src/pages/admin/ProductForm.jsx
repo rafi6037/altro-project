@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { supabase } from '../../lib/supabase';
+import { generateUniqueId } from '../../utils/generateUniqueId';
 import Button from '../../components/Button';
 import { useToast } from '../../components/Toast';
 
@@ -177,8 +178,7 @@ export default function ProductForm() {
     const newImages = [...currentImages];
     for (const file of files) {
       const ext = getSafeImageExtension(file);
-      const uniqueId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-      const path = `product-${uniqueId}.${ext}`;
+      const path = `product-${generateUniqueId()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from('products')
         .upload(path, file, { upsert: false, contentType: file.type });

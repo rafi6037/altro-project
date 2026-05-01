@@ -172,7 +172,7 @@ export default function Dashboard() {
         // Monthly revenue - last 7 months
         const allOrdersRes = await supabase
           .from('orders')
-          .select('total, created_at, items');
+          .select('id, total, created_at, items');
         const allOrders = allOrdersRes.data ?? [];
         const monthMap = {};
         const months = [];
