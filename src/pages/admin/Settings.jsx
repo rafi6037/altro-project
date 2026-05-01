@@ -109,7 +109,8 @@ export default function Settings() {
     const rawExt = file.name.split('.').pop()?.toLowerCase() ?? '';
     const ext = ALLOWED_EXTS.has(rawExt) ? rawExt : 'jpg';
     setLogoUploading(true);
-    const path = `logo-${Date.now()}.${ext}`;
+    const uniqueId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`;
+    const path = `logo-${uniqueId}.${ext}`;
     const { error: upErr } = await supabase.storage
       .from('settings')
       .upload(path, file, { upsert: true, contentType: file.type });

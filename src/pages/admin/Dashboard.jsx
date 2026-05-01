@@ -96,6 +96,11 @@ function polarToCartesian(cx, cy, r, angleDeg) {
   return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
 }
 
+/** For metrics where a decrease is desirable (e.g. pending orders), flip the sign so positive % = improvement */
+function invertTrend(pct) {
+  return pct !== undefined ? -pct : undefined;
+}
+
 export default function Dashboard() {
   const [stats, setStats] = useState({ orders: 0, revenue: 0, products: 0, pending: 0 });
   const [changes, setChanges] = useState({});
@@ -190,7 +195,8 @@ export default function Dashboard() {
           let items;
           try {
             items = typeof o.items === 'string' ? JSON.parse(o.items) : o.items ?? [];
-          } catch {
+          } catch (parseErr) {
+            console.warn('Failed to parse order items for order', o.id, parseErr);
             items = [];
           }
           if (!Array.isArray(items)) items = [];
@@ -258,7 +264,7 @@ export default function Dashboard() {
       label: 'Pending Orders',
       value: stats.pending.toLocaleString(),
       // Invert sign: fewer pending orders is an improvement (positive trend)
-      change: changes.pending !== undefined ? -changes.pending : undefined,
+      change: invertTrend(changes.pending),
       color: 'bg-yellow-50',
       icon: (
         <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -71,6 +71,7 @@ export default function Home() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterDone, setNewsletterDone] = useState(false);
+  const [newsletterError, setNewsletterError] = useState(false);
 
   const { banners: heroSlides } = useBanners('hero_slide');
   const { banners: promobanners } = useBanners('promo_banner');
@@ -89,12 +90,17 @@ export default function Home() {
     e.preventDefault();
     if (!newsletterEmail.trim()) return;
     setNewsletterLoading(true);
-    await supabase
+    setNewsletterError(false);
+    const { error } = await supabase
       .from('subscribers')
       .upsert([{ email: newsletterEmail.trim().toLowerCase() }], { onConflict: 'email', ignoreDuplicates: true });
     setNewsletterLoading(false);
-    setNewsletterDone(true);
-    setNewsletterEmail('');
+    if (error) {
+      setNewsletterError(true);
+    } else {
+      setNewsletterDone(true);
+      setNewsletterEmail('');
+    }
   }
 
   return (
@@ -364,23 +370,30 @@ export default function Home() {
               ✓ Thank you for subscribing!
             </p>
           ) : (
-            <form onSubmit={handleNewsletterSubmit} className="flex gap-2 max-w-sm mx-auto">
-              <input
-                type="email"
-                required
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="flex-1 border border-[#1a5c38]/20 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a5c38] bg-white"
-              />
-              <button
-                type="submit"
-                disabled={newsletterLoading}
-                className="bg-[#1a5c38] text-white font-semibold px-5 py-2.5 rounded-full text-sm hover:bg-[#2a7d50] transition-colors shrink-0 disabled:opacity-60"
-              >
-                {newsletterLoading ? '…' : 'Subscribe'}
-              </button>
-            </form>
+            <>
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-2 max-w-sm mx-auto">
+                <input
+                  type="email"
+                  required
+                  value={newsletterEmail}
+                  onChange={(e) => { setNewsletterEmail(e.target.value); setNewsletterError(false); }}
+                  placeholder="your@email.com"
+                  className="flex-1 border border-[#1a5c38]/20 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-[#1a5c38] bg-white"
+                />
+                <button
+                  type="submit"
+                  disabled={newsletterLoading}
+                  className="bg-[#1a5c38] text-white font-semibold px-5 py-2.5 rounded-full text-sm hover:bg-[#2a7d50] transition-colors shrink-0 disabled:opacity-60"
+                >
+                  {newsletterLoading ? '…' : 'Subscribe'}
+                </button>
+              </form>
+              {newsletterError && (
+                <p className="text-red-500 text-xs mt-2">
+                  Something went wrong. Please try again.
+                </p>
+              )}
+            </>
           )}
         </div>
       </section>
