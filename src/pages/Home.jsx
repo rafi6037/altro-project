@@ -251,44 +251,63 @@ export default function Home() {
         </section>
       )}
 
-      {/* ── Category Carousel ── */}
-      <section className="pt-12 pb-4" id="categories">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {categoryBanners.length > 0 ? (
-            <>
-              <div className="flex items-center gap-4 mb-6">
-                <h2 className="text-xs font-semibold tracking-[0.18em] uppercase text-[#1a5c38] shrink-0">
-                  Shop by Category
-                </h2>
-                <span className="h-px flex-1 bg-[#1a5c38]/10" />
+{/* ── Category Carousel ── */}
+{categoryBanners.length > 0 && (
+  <section className="pt-12 pb-4" id="categories">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center gap-4 mb-6">
+        <h2 className="text-xs font-semibold tracking-[0.18em] uppercase text-[#1a5c38] shrink-0">
+          Shop by Category
+        </h2>
+        <span className="h-px flex-1 bg-[#1a5c38]/10" />
+      </div>
+
+      {/* Scrollable row on mobile, grid on desktop */}
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible">
+        {categoryBanners.map((cat, idx) => (
+          
+            key={cat.id ?? idx}
+            href="/#products"
+            className="group relative flex-shrink-0 w-36 md:w-auto rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+            style={{ aspectRatio: '3/4' }}
+          >
+            {/* Background image or fallback */}
+            {cat.image_url ? (
+              <img
+                src={cat.image_url}
+                alt={cat.title ?? ''}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-[#1a5c38]/15 flex items-center justify-center text-4xl">
+                👕
               </div>
-              <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
-                {categoryBanners.map((cat, idx) => (
-                  <a
-                    key={cat.id ?? idx}
-                    href="/#products"
-                    className="flex flex-col items-center gap-2.5 shrink-0 group"
-                  >
-                    <div className="w-[72px] h-[72px] rounded-full overflow-hidden bg-[#1a5c38]/8 ring-2 ring-transparent group-hover:ring-[#c9f230] transition-all duration-300">
-                      {cat.image_url ? (
-                        <img src={cat.image_url} alt={cat.title ?? ''} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-[#1a5c38]/15 flex items-center justify-center text-xl">👕</div>
-                      )}
-                    </div>
-                    <span className="text-[11px] font-semibold text-[#0e1a12]/60 group-hover:text-[#1a5c38] transition-colors tracking-wide uppercase">
-                      {cat.title}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </>
-          ) : (
-            // Fallback pill tabs shown inline with Products section below
-            null
-          )}
-        </div>
-      </section>
+            )}
+
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0e1a12]/80 via-[#0e1a12]/20 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+
+            {/* Label */}
+            <div className="absolute bottom-0 left-0 right-0 p-3.5">
+              <span className="block text-white font-bold text-sm leading-tight tracking-wide">
+                {cat.title}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[#c9f230] text-[10px] font-semibold mt-1 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                Shop now
+                <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </div>
+
+            {/* Hover border accent */}
+            <div className="absolute inset-0 rounded-2xl ring-2 ring-transparent group-hover:ring-[#c9f230]/60 transition-all duration-300" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
       {/* ── Products Section ── */}
       <section id="products" className="py-10">
