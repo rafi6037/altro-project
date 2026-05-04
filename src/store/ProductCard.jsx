@@ -102,10 +102,10 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
-        {/* Quick Add - hover only on desktop */}
+        {/* Quick Add - desktop hover only, hidden on mobile */}
         {stock > 0 && (
           <div
-            className={`absolute bottom-0 left-0 right-0 transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 md:translate-y-1 md:group-hover:translate-y-0`}
+            className={`absolute bottom-0 left-0 right-0 hidden md:block transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 md:translate-y-1 md:group-hover:translate-y-0`}
           >
             <button
               onClick={handleAddToCart}
