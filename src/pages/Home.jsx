@@ -11,8 +11,6 @@ import CheckoutModal from '../store/CheckoutModal';
 import { useProducts } from '../hooks/useProducts';
 import { useBanners } from '../hooks/useBanners';
 
-const CATEGORIES = ['All', 'Panjabi', 'Shirts', 'T-Shirts', 'Bottoms'];
-
 const USP_ITEMS = [
   {
     icon: (
@@ -316,7 +314,7 @@ export default function Home() {
           </div>
 
           <div className="flex gap-2 flex-wrap mb-7">
-            {CATEGORIES.map((cat) => (
+            {['All', ...categoryBanners.map((b) => b.title)].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveTab(cat)}
