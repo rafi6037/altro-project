@@ -215,11 +215,11 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {promobanners.slice(0, 3).map((banner, idx) => (
-              
+              <a
                 key={banner.id != null ? banner.id : idx}
                 href={banner.cta_url != null ? banner.cta_url : '#'}
                 className="relative block rounded-xl overflow-hidden group"
-                style={{ aspectRatio: '4/3' }}
+                style={{ aspectRatio: '3/1' }}
               >
                 {banner.image_url ? (
                   <img
@@ -230,13 +230,13 @@ export default function Home() {
                 ) : (
                   <div className="w-full h-full bg-[#1a5c38]" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5">
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent" />
+                <div className="absolute inset-0 flex flex-col justify-center p-5">
                   {banner.title && (
-                    <h3 className="text-white font-bold text-lg leading-tight mb-2">{banner.title}</h3>
+                    <h3 className="text-white font-bold text-base leading-tight mb-2">{banner.title}</h3>
                   )}
                   {banner.cta_text && (
-                    <span className="inline-flex items-center gap-1.5 bg-[#c9f230] text-[#0e1a12] text-xs font-bold px-3.5 py-1.5 rounded-full">
+                    <span className="inline-flex items-center gap-1.5 bg-[#c9f230] text-[#0e1a12] text-xs font-bold px-3.5 py-1.5 rounded-full w-fit">
                       {banner.cta_text}
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -250,7 +250,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* Category Carousel */}
+      {/* Category Section */}
       {categoryBanners.length > 0 && (
         <section className="pt-12 pb-4" id="categories">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -261,12 +261,40 @@ export default function Home() {
               <span className="h-px flex-1 bg-[#1a5c38]/10" />
             </div>
 
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible">
+            {/* Mobile: circular scroll */}
+            <div className="md:hidden flex gap-5 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
               {categoryBanners.map((cat, idx) => (
-                
+                <a
                   key={cat.id != null ? cat.id : idx}
                   href="/#products"
-                  className="group relative flex-shrink-0 w-36 md:w-auto rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+                  className="group snap-start flex-shrink-0 flex flex-col items-center gap-2.5 w-[76px]"
+                >
+                  <div className="relative w-[76px] h-[76px] rounded-full overflow-hidden ring-2 ring-[#1a5c38]/15 group-hover:ring-[#c9f230] transition-all duration-300 shadow-sm group-hover:shadow-md">
+                    {cat.image_url ? (
+                      <img
+                        src={cat.image_url}
+                        alt={cat.title != null ? cat.title : ''}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#1a5c38]/10 flex items-center justify-center text-2xl">👕</div>
+                    )}
+                    <div className="absolute inset-0 bg-[#0e1a12]/0 group-hover:bg-[#0e1a12]/15 transition-colors duration-300" />
+                  </div>
+                  <span className="text-[11px] font-semibold text-[#0e1a12] text-center leading-tight group-hover:text-[#1a5c38] transition-colors duration-200">
+                    {cat.title}
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            {/* Desktop: portrait grid */}
+            <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {categoryBanners.map((cat, idx) => (
+                <a
+                  key={cat.id != null ? cat.id : idx}
+                  href="/#products"
+                  className="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                   style={{ aspectRatio: '3/4' }}
                 >
                   {cat.image_url ? (
@@ -276,25 +304,20 @@ export default function Home() {
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-[#1a5c38]/15 flex items-center justify-center text-4xl">
-                      {'👕'}
-                    </div>
+                    <div className="absolute inset-0 bg-[#1a5c38]/15 flex items-center justify-center text-4xl">👕</div>
                   )}
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0e1a12]/80 via-[#0e1a12]/20 to-transparent transition-opacity duration-300 group-hover:opacity-95" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-3.5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0e1a12]/80 via-[#0e1a12]/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
                     <span className="block text-white font-bold text-sm leading-tight tracking-wide">
                       {cat.title}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[#c9f230] text-[10px] font-semibold mt-1 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                    <span className="flex items-center gap-1 text-[#c9f230] text-[10px] font-semibold mt-1.5 opacity-0 group-hover:opacity-100 translate-y-1.5 group-hover:translate-y-0 transition-all duration-300">
                       Shop now
                       <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                       </svg>
                     </span>
                   </div>
-
                   <div className="absolute inset-0 rounded-2xl ring-2 ring-transparent group-hover:ring-[#c9f230]/60 transition-all duration-300" />
                 </a>
               ))}
@@ -383,10 +406,10 @@ export default function Home() {
       <section className="py-8 px-4">
         <div className="max-w-7xl mx-auto">
           {saleBanner ? (
-            
+            <a
               href={saleBanner.cta_url != null ? saleBanner.cta_url : '#'}
               className="relative block rounded-2xl overflow-hidden group"
-              style={{ aspectRatio: '21/7' }}
+              style={{ aspectRatio: '3/1' }}
             >
               <img
                 src={saleBanner.image_url}
@@ -420,7 +443,7 @@ export default function Home() {
                 </h3>
                 <p className="text-white/60 text-sm mt-2">Up to 50% off on selected items</p>
               </div>
-              
+              <a
                 href="#products"
                 className="relative z-10 shrink-0 bg-[#c9f230] text-[#0e1a12] font-bold px-7 py-3 rounded-full text-sm inline-flex items-center gap-2 hover:bg-lime-300 transition-colors"
               >
