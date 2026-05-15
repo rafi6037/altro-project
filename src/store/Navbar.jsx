@@ -8,7 +8,6 @@ const NAV_LINKS = [
   { to: '/#products', label: 'Products' },
   { to: '/track', label: 'Track Order' },
 ];
-const toBoolean = (val, def = false) => (val === null || val === undefined ? def : val === true || val === 'true');
 
 export default function Navbar({ onCartClick }) {
   const [scrolled, setScrolled] = useState(false);
@@ -17,7 +16,9 @@ export default function Navbar({ onCartClick }) {
   const location = useLocation();
   const itemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.qty, 0));
 
-  const announcementEnabled = toBoolean(getSetting('announcement_bar_enabled'));
+  const announcementValue = getSetting('announcement_bar_enabled');
+  const announcementEnabled =
+    announcementValue === true || announcementValue === 'true';
   const announcementText = getSetting('announcement_bar_text', 'Free delivery on orders over ৳999');
   const logoUrl = getSetting('logo_url', '');
 
