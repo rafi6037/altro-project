@@ -215,7 +215,11 @@ export default function Footer() {
         {acceptedPaymentMethods.length > 0 && (
           <div className="mt-10 pt-6 border-t border-white/10">
             <p className="text-xs text-white/40 uppercase tracking-widest mb-3">Accepted Payment Methods</p>
-            <div className="flex flex-nowrap items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1">
+            <div
+              className="flex flex-nowrap items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1"
+              tabIndex={0}
+              aria-label="Accepted payment methods list"
+            >
               {acceptedPaymentMethods.map((method) => (
                 <div
                   key={method.key}
