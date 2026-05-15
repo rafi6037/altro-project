@@ -218,7 +218,6 @@ export default function Footer() {
             <div
               className="flex flex-nowrap items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1"
               role="region"
-              tabIndex={0}
               aria-label="Accepted payment methods list"
             >
               {acceptedPaymentMethods.map((method) => (
