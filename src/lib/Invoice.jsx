@@ -172,7 +172,7 @@ const paymentLabels = {
 
 function formatAmt(amount) {
   const num = Number(amount) || 0;
-  return `\u09F3${num.toLocaleString('en-BD')}`;
+  return `BDT ${num.toLocaleString('en-BD')}`;
 }
 
 function formatDate(dateString) {
