@@ -13,31 +13,32 @@ const QUICK_LINKS = [
   { to: '/#about', label: 'About Us' },
 ];
 
+const toBool = (val, def) => (val === null || val === undefined) ? def : val === true || val === 'true';
+const normalizeUrl = (url) => {
+  const value = String(url ?? '').trim();
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://${value}`;
+};
+const toWhatsAppNumber = (phone) => {
+  const digits = String(phone ?? '').replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('880') && digits.length === 13) return digits;
+  if (digits.startsWith('0') && digits.length === 11) return `880${digits.slice(1)}`;
+  if (digits.startsWith('1') && digits.length === 10) return `880${digits}`;
+  return '';
+};
+
 export default function Footer() {
   const { getSetting } = useSettings();
-
-  const toBool = (val, def) => (val === null || val === undefined) ? def : val === true || val === 'true';
-  const normalizeUrl = (url) => {
-    const value = String(url ?? '').trim();
-    if (!value) return '';
-    if (/^https?:\/\//i.test(value)) return value;
-    return `https://${value}`;
-  };
-  const toWhatsAppNumber = (phone) => {
-    const digits = String(phone ?? '').replace(/\D/g, '');
-    if (!digits) return '';
-    if (digits.startsWith('880')) return digits;
-    if (digits.startsWith('0')) return `88${digits}`;
-    return digits;
-  };
 
   const logoUrl = getSetting('logo_url', '');
   const tagline = getSetting('footer_tagline', 'Quality attire crafted with care, right from Bangladesh.');
   const contactEmail = getSetting('contact_email', '');
-  const contactPhone = getSetting('store_phone', getSetting('contact_phone', ''));
+  const storePhone = getSetting('store_phone', getSetting('contact_phone', ''));
   const facebookUrl = normalizeUrl(getSetting('facebook_url', getSetting('social_facebook', '')));
   const instagramUrl = normalizeUrl(getSetting('instagram_url', getSetting('social_instagram', '')));
-  const whatsappNumber = toWhatsAppNumber(getSetting('store_phone', getSetting('contact_phone', '')));
+  const whatsappNumber = toWhatsAppNumber(storePhone);
   const whatsappUrl = whatsappNumber ? `https://wa.me/${whatsappNumber}` : '';
   const acceptedPaymentMethods = [
     { key: 'bkash', label: 'bKash', logo: bkashLogo, enabled: toBool(getSetting('bkash_enabled'), true) },
@@ -114,16 +115,16 @@ export default function Footer() {
                   </a>
                 </li>
               )}
-              {contactPhone && (
+              {storePhone && (
                 <li className="flex items-start gap-2.5">
                   <svg className="w-4 h-4 text-[#c9f230] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   <a
-                    href={`tel:${contactPhone}`}
+                    href={`tel:${storePhone}`}
                     className="text-white/60 text-sm hover:text-white transition-colors"
                   >
-                    {contactPhone}
+                    {storePhone}
                   </a>
                 </li>
               )}
@@ -213,7 +214,7 @@ export default function Footer() {
 
         {acceptedPaymentMethods.length > 0 && (
           <div className="mt-10 pt-6 border-t border-white/10">
-            <p className="text-xs text-white/40 uppercase tracking-widest mb-3">All payment methods we accept</p>
+            <p className="text-xs text-white/40 uppercase tracking-widest mb-3">Accepted Payment Methods</p>
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               {acceptedPaymentMethods.map((method) => (
                 <div
