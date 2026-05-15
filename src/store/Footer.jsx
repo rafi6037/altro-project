@@ -215,16 +215,16 @@ export default function Footer() {
         {acceptedPaymentMethods.length > 0 && (
           <div className="mt-10 pt-6 border-t border-white/10">
             <p className="text-xs text-white/40 uppercase tracking-widest mb-3">Accepted Payment Methods</p>
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="flex flex-nowrap items-center gap-2 sm:gap-3 overflow-x-auto pb-1">
               {acceptedPaymentMethods.map((method) => (
                 <div
                   key={method.key}
-                  className="h-10 sm:h-11 w-[74px] sm:w-20 bg-white rounded-lg border border-white/10 flex items-center justify-center px-2"
+                  className="h-9 sm:h-10 w-16 sm:w-[70px] shrink-0 bg-white rounded-lg border border-white/10 flex items-center justify-center px-1.5 sm:px-2"
                 >
                   <img
                     src={method.logo}
                     alt={method.label}
-                    className="max-h-7 sm:max-h-8 w-full object-contain"
+                    className="max-h-6 sm:max-h-7 w-full object-contain"
                   />
                 </div>
               ))}
