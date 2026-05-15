@@ -524,6 +524,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* USP Strip */}
+      <section ref={uspRef} className="bg-white border-b border-[#1a5c38]/8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#1a5c38]/8">
+            {USP_ITEMS.map((item, i) => (
+              <div key={item.title} className="flex items-center gap-3 p-5 md:p-6" style={anim(uspInView, i * 100)}>
+                <div className="shrink-0 w-10 h-10 rounded-full bg-[#1a5c38]/8 flex items-center justify-center text-[#1a5c38]">
+                  {item.icon}
+                </div>
+                <div>
+                  <p className="font-semibold text-[#0e1a12] text-sm leading-tight">{item.title}</p>
+                  <p className="text-[#0e1a12]/45 text-xs mt-0.5 leading-snug">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Newsletter */}
       <section ref={nlRef} className="py-16 bg-[#0e1a12]">
         <div className="max-w-lg mx-auto px-4 text-center">
@@ -563,25 +582,6 @@ export default function Home() {
               )}
             </>
           )}
-        </div>
-      </section>
-
-      {/* USP Strip */}
-      <section ref={uspRef} className="bg-white border-b border-[#1a5c38]/8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#1a5c38]/8">
-            {USP_ITEMS.map((item, i) => (
-              <div key={item.title} className="flex items-center gap-3 p-5 md:p-6" style={anim(uspInView, i * 100)}>
-                <div className="shrink-0 w-10 h-10 rounded-full bg-[#1a5c38]/8 flex items-center justify-center text-[#1a5c38]">
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="font-semibold text-[#0e1a12] text-sm leading-tight">{item.title}</p>
-                  <p className="text-[#0e1a12]/45 text-xs mt-0.5 leading-snug">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
