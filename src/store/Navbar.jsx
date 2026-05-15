@@ -17,7 +17,7 @@ export default function Navbar({ onCartClick }) {
   const location = useLocation();
   const itemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.qty, 0));
 
-  const announcementEnabled = toBool(getSetting('announcement_bar_enabled'), false);
+  const announcementEnabled = toBool(getSetting('announcement_bar_enabled'));
   const announcementText = getSetting('announcement_bar_text', 'Free delivery on orders over ৳999');
   const logoUrl = getSetting('logo_url', '');
 
