@@ -168,6 +168,9 @@ export default function ProductDetail() {
                 className={`aspect-square rounded-2xl overflow-hidden bg-[#1a5c38]/10 relative ${images.length > 0 ? 'cursor-crosshair' : ''}`}
                 tabIndex={images.length > 0 ? 0 : -1}
                 aria-label={images.length > 0 ? 'Product image magnifier' : undefined}
+                style={{
+                  touchAction: images.length > 0 ? 'none' : 'auto',
+                }}
                 onMouseEnter={(e) => {
                   if (images.length === 0) return;
                   updateMagnifierPosition(e.clientX, e.clientY, e.currentTarget);
@@ -191,6 +194,10 @@ export default function ProductDetail() {
                 }}
                 onTouchEnd={() => setMagnifierActive(false)}
                 onTouchCancel={() => setMagnifierActive(false)}
+                onContextMenu={(e) => {
+                  if (images.length === 0) return;
+                  e.preventDefault();
+                }}
                 onBlur={() => setMagnifierActive(false)}
                 onKeyDown={(e) => {
                   if (images.length === 0) return;
@@ -231,6 +238,10 @@ export default function ProductDetail() {
                     src={images[mainImageIdx]}
                     alt={`${product.name} - image ${mainImageIdx + 1}`}
                     className="w-full h-full object-cover"
+                    draggable={false}
+                    style={{
+                      WebkitTouchCallout: 'none',
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
