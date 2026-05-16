@@ -190,14 +190,34 @@ export default function ProductDetail() {
                 }}
                 onTouchEnd={() => setMagnifierActive(false)}
                 onTouchCancel={() => setMagnifierActive(false)}
-                onFocus={() => {
-                  if (images.length === 0) return;
-                  setMagnifierPosition({ x: 50, y: 50 });
-                  setMagnifierActive(true);
-                }}
                 onBlur={() => setMagnifierActive(false)}
                 onKeyDown={(e) => {
+                  if (images.length === 0) return;
+                  const step = 6;
+                  if ((e.key === 'Enter' || e.key === ' ') && !magnifierActive) {
+                    e.preventDefault();
+                    setMagnifierPosition({ x: 50, y: 50 });
+                    setMagnifierActive(true);
+                    return;
+                  }
                   if (e.key === 'Escape') setMagnifierActive(false);
+                  if (!magnifierActive) return;
+                  if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    setMagnifierPosition((pos) => ({ ...pos, x: Math.max(0, pos.x - step) }));
+                  }
+                  if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    setMagnifierPosition((pos) => ({ ...pos, x: Math.min(100, pos.x + step) }));
+                  }
+                  if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setMagnifierPosition((pos) => ({ ...pos, y: Math.max(0, pos.y - step) }));
+                  }
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setMagnifierPosition((pos) => ({ ...pos, y: Math.min(100, pos.y + step) }));
+                  }
                 }}
               >
                 {images.length > 0 ? (
