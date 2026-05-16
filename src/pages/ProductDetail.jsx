@@ -14,6 +14,7 @@ import { useToast } from '../components/Toast';
 import Spinner from '../components/Spinner';
 
 const MAGNIFICATION_SCALE = 220;
+const MAGNIFIER_KEYBOARD_STEP = 6;
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -193,7 +194,6 @@ export default function ProductDetail() {
                 onBlur={() => setMagnifierActive(false)}
                 onKeyDown={(e) => {
                   if (images.length === 0) return;
-                  const step = 6;
                   if ((e.key === 'Enter' || e.key === ' ') && !magnifierActive) {
                     e.preventDefault();
                     setMagnifierPosition({ x: 50, y: 50 });
@@ -204,22 +204,25 @@ export default function ProductDetail() {
                   if (!magnifierActive) return;
                   if (e.key === 'ArrowLeft') {
                     e.preventDefault();
-                    setMagnifierPosition((pos) => ({ ...pos, x: Math.max(0, pos.x - step) }));
+                    setMagnifierPosition((pos) => ({ ...pos, x: Math.max(0, pos.x - MAGNIFIER_KEYBOARD_STEP) }));
                   }
                   if (e.key === 'ArrowRight') {
                     e.preventDefault();
-                    setMagnifierPosition((pos) => ({ ...pos, x: Math.min(100, pos.x + step) }));
+                    setMagnifierPosition((pos) => ({ ...pos, x: Math.min(100, pos.x + MAGNIFIER_KEYBOARD_STEP) }));
                   }
                   if (e.key === 'ArrowUp') {
                     e.preventDefault();
-                    setMagnifierPosition((pos) => ({ ...pos, y: Math.max(0, pos.y - step) }));
+                    setMagnifierPosition((pos) => ({ ...pos, y: Math.max(0, pos.y - MAGNIFIER_KEYBOARD_STEP) }));
                   }
                   if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    setMagnifierPosition((pos) => ({ ...pos, y: Math.min(100, pos.y + step) }));
+                    setMagnifierPosition((pos) => ({ ...pos, y: Math.min(100, pos.y + MAGNIFIER_KEYBOARD_STEP) }));
                   }
                 }}
               >
+                <span className="sr-only" aria-live="polite">
+                  {magnifierActive ? 'Image magnifier active' : 'Image magnifier inactive'}
+                </span>
                 {images.length > 0 ? (
                   <img
                     key={mainImageIdx}
