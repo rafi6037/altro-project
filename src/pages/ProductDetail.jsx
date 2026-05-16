@@ -183,14 +183,12 @@ export default function ProductDetail() {
                 onMouseLeave={() => setMagnifierActive(false)}
                 onTouchStart={(e) => {
                   if (images.length === 0 || e.touches.length === 0) return;
-                  e.preventDefault();
                   const touch = e.touches[0];
                   updateMagnifierPosition(touch.clientX, touch.clientY, e.currentTarget);
                   setMagnifierActive(true);
                 }}
                 onTouchMove={(e) => {
                   if (images.length === 0 || e.touches.length === 0) return;
-                  e.preventDefault();
                   const touch = e.touches[0];
                   updateMagnifierPosition(touch.clientX, touch.clientY, e.currentTarget);
                 }}
@@ -242,8 +240,6 @@ export default function ProductDetail() {
                     className="w-full h-full object-cover"
                     draggable={false}
                     style={{
-                      userSelect: 'none',
-                      WebkitUserSelect: 'none',
                       WebkitTouchCallout: 'none',
                     }}
                   />
