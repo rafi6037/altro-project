@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useProducts } from '../hooks/useProducts';
 import Navbar from '../store/Navbar';
@@ -15,7 +15,6 @@ import Spinner from '../components/Spinner';
 
 export default function ProductDetail() {
   const { slug } = useParams();
-  const navigate = useNavigate();
   const { toast } = useToast();
   const addItem = useCartStore((s) => s.addItem);
 
@@ -29,23 +28,12 @@ export default function ProductDetail() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [mainImageIdx, setMainImageIdx] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [zoomOpen, setZoomOpen] = useState(false);
+  const [magnifierActive, setMagnifierActive] = useState(false);
+  const [magnifierPosition, setMagnifierPosition] = useState({ x: 50, y: 50 });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [slug]);
-
-  useEffect(() => {
-    if (!zoomOpen) return;
-    const len = product?.images?.length ?? 0;
-    const handleKey = (e) => {
-      if (e.key === 'Escape') setZoomOpen(false);
-      if (e.key === 'ArrowLeft' && len > 1) setMainImageIdx((i) => (i - 1 + len) % len);
-      if (e.key === 'ArrowRight' && len > 1) setMainImageIdx((i) => (i + 1) % len);
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [zoomOpen, product?.images?.length]);
 
   useEffect(() => {
     if (!slug) return;
@@ -95,9 +83,18 @@ export default function ProductDetail() {
   };
 
   const images = product?.images ?? [];
-  const displayPrice = product?.sale_price ?? product?.price ?? 0;
   const hasSale = product?.sale_price != null && product.sale_price < product.price;
   const outOfStock = product?.stock === 0;
+
+  const updateMagnifierPosition = (clientX, clientY, element) => {
+    const rect = element.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    setMagnifierPosition({
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y)),
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f2eb]">
@@ -164,8 +161,30 @@ export default function ProductDetail() {
             <div className="space-y-3">
               {/* Main Image */}
               <div
-                className={`aspect-square rounded-2xl overflow-hidden bg-[#1a5c38]/10 relative ${images.length > 0 ? 'cursor-zoom-in' : ''}`}
-                onClick={() => images.length > 0 && setZoomOpen(true)}
+                className={`aspect-square rounded-2xl overflow-hidden bg-[#1a5c38]/10 relative ${images.length > 0 ? 'cursor-crosshair' : ''}`}
+                onMouseEnter={(e) => {
+                  if (images.length === 0) return;
+                  updateMagnifierPosition(e.clientX, e.clientY, e.currentTarget);
+                  setMagnifierActive(true);
+                }}
+                onMouseMove={(e) => {
+                  if (images.length === 0) return;
+                  updateMagnifierPosition(e.clientX, e.clientY, e.currentTarget);
+                }}
+                onMouseLeave={() => setMagnifierActive(false)}
+                onTouchStart={(e) => {
+                  if (images.length === 0 || e.touches.length === 0) return;
+                  const touch = e.touches[0];
+                  updateMagnifierPosition(touch.clientX, touch.clientY, e.currentTarget);
+                  setMagnifierActive(true);
+                }}
+                onTouchMove={(e) => {
+                  if (images.length === 0 || e.touches.length === 0) return;
+                  const touch = e.touches[0];
+                  updateMagnifierPosition(touch.clientX, touch.clientY, e.currentTarget);
+                }}
+                onTouchEnd={() => setMagnifierActive(false)}
+                onTouchCancel={() => setMagnifierActive(false)}
               >
                 {images.length > 0 ? (
                   <img
@@ -188,64 +207,19 @@ export default function ProductDetail() {
                     </svg>
                   </div>
                 )}
-              </div>
-
-              {/* Image Zoom Lightbox */}
-              {zoomOpen && images.length > 0 && (
-                <div
-                  className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
-                  onClick={() => setZoomOpen(false)}
-                >
-                  <button
-                    onClick={() => setZoomOpen(false)}
-                    className="absolute top-4 right-4 p-2 text-white/60 hover:text-white transition-colors z-10"
-                    aria-label="Close zoom"
-                  >
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-
-                  <img
-                    src={images[mainImageIdx]}
-                    alt={product.name}
-                    className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
+                {images.length > 0 && (
+                  <div
+                    className="absolute inset-0 pointer-events-none transition-opacity duration-100"
+                    style={{
+                      opacity: magnifierActive ? 1 : 0,
+                      backgroundImage: `url(${images[mainImageIdx]})`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: '220%',
+                      backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
+                    }}
                   />
-
-                  {images.length > 1 && (
-                    <>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setMainImageIdx((i) => (i - 1 + images.length) % images.length); }}
-                        className="absolute left-4 p-2 text-white/60 hover:text-white transition-colors"
-                        aria-label="Previous image"
-                      >
-                        <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setMainImageIdx((i) => (i + 1) % images.length); }}
-                        className="absolute right-4 p-2 text-white/60 hover:text-white transition-colors"
-                        aria-label="Next image"
-                      >
-                        <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-                        {images.map((_, idx) => (
-                          <button
-                            key={idx}
-                            onClick={(e) => { e.stopPropagation(); setMainImageIdx(idx); }}
-                            className={`w-2 h-2 rounded-full transition-all ${idx === mainImageIdx ? 'bg-white scale-125' : 'bg-white/40'}`}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Thumbnail Strip */}
               {images.length > 1 && (
