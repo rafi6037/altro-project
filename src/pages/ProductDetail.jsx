@@ -13,6 +13,8 @@ import { formatCurrency } from '../utils/formatCurrency';
 import { useToast } from '../components/Toast';
 import Spinner from '../components/Spinner';
 
+const MAGNIFICATION_SCALE = 220;
+
 export default function ProductDetail() {
   const { slug } = useParams();
   const { toast } = useToast();
@@ -83,7 +85,8 @@ export default function ProductDetail() {
   };
 
   const images = product?.images ?? [];
-  const hasSale = product?.sale_price != null && product.sale_price < product.price;
+  const hasSale =
+    product?.sale_price != null && product?.price != null && product.sale_price < product.price;
   const outOfStock = product?.stock === 0;
 
   const updateMagnifierPosition = (clientX, clientY, element) => {
@@ -162,6 +165,8 @@ export default function ProductDetail() {
               {/* Main Image */}
               <div
                 className={`aspect-square rounded-2xl overflow-hidden bg-[#1a5c38]/10 relative ${images.length > 0 ? 'cursor-crosshair' : ''}`}
+                tabIndex={images.length > 0 ? 0 : -1}
+                aria-label={images.length > 0 ? 'Product image magnifier' : undefined}
                 onMouseEnter={(e) => {
                   if (images.length === 0) return;
                   updateMagnifierPosition(e.clientX, e.clientY, e.currentTarget);
@@ -185,6 +190,15 @@ export default function ProductDetail() {
                 }}
                 onTouchEnd={() => setMagnifierActive(false)}
                 onTouchCancel={() => setMagnifierActive(false)}
+                onFocus={() => {
+                  if (images.length === 0) return;
+                  setMagnifierPosition({ x: 50, y: 50 });
+                  setMagnifierActive(true);
+                }}
+                onBlur={() => setMagnifierActive(false)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') setMagnifierActive(false);
+                }}
               >
                 {images.length > 0 ? (
                   <img
@@ -214,7 +228,7 @@ export default function ProductDetail() {
                       opacity: magnifierActive ? 1 : 0,
                       backgroundImage: `url(${images[mainImageIdx]})`,
                       backgroundRepeat: 'no-repeat',
-                      backgroundSize: '220%',
+                      backgroundSize: `${MAGNIFICATION_SCALE}%`,
                       backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
                     }}
                   />
