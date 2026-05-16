@@ -220,9 +220,11 @@ export default function ProductDetail() {
                   }
                 }}
               >
-                <span className="sr-only" aria-live="polite">
-                  {magnifierActive ? 'Image magnifier active' : 'Image magnifier inactive'}
-                </span>
+                {magnifierActive && (
+                  <span className="sr-only" aria-live="polite">
+                    Image magnifier active
+                  </span>
+                )}
                 {images.length > 0 ? (
                   <img
                     key={mainImageIdx}
@@ -247,6 +249,7 @@ export default function ProductDetail() {
                 {images.length > 0 && (
                   <div
                     className="absolute inset-0 pointer-events-none transition-opacity duration-100"
+                    aria-hidden="true"
                     style={{
                       opacity: magnifierActive ? 1 : 0,
                       backgroundImage: `url(${images[mainImageIdx]})`,
